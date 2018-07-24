@@ -133,28 +133,26 @@ class p1b2Tests(unittest.TestCase):
    
     def test_MR32_AdditionalTrainingSample(self):
         (X_train, y_train), (X_test, y_test) = self.__getCopiesOfData()
-        n = np.random.randint(X_test.shape[1])
+        n = np.random.randint(y_train.shape[1])
 
-        count = int(np.sum(X_train[:,n]))
-
-        newXTrain = np.zeros((X_train.shape[0]+count,X_train.shape[1]))
-        newYTrain = np.zeros((y_train.shape[0]+count,y_train.shape[1]))
+        count = int(np.sum(y_train[:,n]))
+        newX_train = copy.copy(X_train)
+        newY_train = copy.copy(y_train)
         
-        newXTrain[:X_train.shape[0],:] = X_train
-        newYTrain[:y_train.shape[0],:] = y_train
-        
-        XCount = count
-        for x in range(count):
+        for x in range(X_train.shape[0]):
             if np.argmax(y_train[x,:]) == n:
-                newXTrain[XCount,:] = X_train[x,:]
-                newYTrain[XCount,:] = y_train[x,:]
-                XCount = XCount + 1
+                newX_train = np.vstack([newX_train,X_train[x]])
+                newY_train = np.vstack([newY_train,y_train[x]])
 
-        newModel = p1b2_baseline_keras2.main(newXTrain,newYTrain,X_test,y_test,True)
+        newModel = p1b2_baseline_keras2.main(newX_train,newY_train,X_test,y_test,True)
         newPreds = newModel.predict_classes(X_test)
-
+        
+        assert X_train.shape[0] + count == newX_train.shape[0], "Wrong size"
+        print(n)
+        print(newPreds)
+        print(self._origPredictions)
         for x in range(X_test.shape[0]):
-            if (self._origPredictions[x] == n):
+            if self._origPredictions[x] == n:
                 assert newPreds[x] == n, "doubling the training samples for class n changed some classifications from n to another class"
     
     def test_MR41_AddClassByDuplicatingSamples(self):
