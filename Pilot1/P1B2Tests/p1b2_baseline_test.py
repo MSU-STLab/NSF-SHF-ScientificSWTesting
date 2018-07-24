@@ -60,7 +60,7 @@ class p1b2Tests(unittest.TestCase):
         newModel = p1b2_baseline_keras2.main(X_train,y_train,X_test,y_test,True)
         newPredictions = newModel.predict_classes(X_test)
 
-        for x in range(X_test.shape[1]):
+        for x in range(X_test.shape[0]):
             assert newPredictions[x] == p[self._origPredictions[x]], "permuting class labels changes outcome of model"
             #print(p)
             #print(self._origPredictions[x])
@@ -98,7 +98,7 @@ class p1b2Tests(unittest.TestCase):
         tempTest[:,:-1] = X_test
         
         #pick a random class
-        n = np.random.randint(10)
+        n = np.random.randint(y_test.shape[1])
 
         #if a test point is associated with class n, make the new attribute 1
         for x in range(X_train.shape[0]):
@@ -234,9 +234,13 @@ class p1b2Tests(unittest.TestCase):
         newModel = p1b2_baseline_keras2.main(newXTrain,newYTrain,X_test,y_test,True)
         newPreds = newModel.predict_classes(X_test)
 
+        count = 0
         for x in range(X_test.shape[0]):
             if self._origPredictions[x] != cl:
-                assert self._origPredictions[x] == newPreds[x], "removing a class causes the model to change predictions for the remaining classes"
+                print(self._origPredictions[x])
+                print(newPreds[count])
+                assert self._origPredictions[x] == newPreds[count], "removing a class causes the model to change predictions for the remaining classes"
+                count = count + 1
 
     def test_MR52_RemovalOfSamples(self):
         (X_train, y_train), (X_test, y_test) = self.__getCopiesOfData()

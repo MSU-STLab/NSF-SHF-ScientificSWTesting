@@ -15,16 +15,7 @@ class p3b1tests(unittest.TestCase):
     (features_train, truths_train, features_test, truths_test) = p3b1_baseline_keras2.readData()
     _srcModel = p3b1_baseline_keras2.do_10_fold(features_train, truths_train, features_test, truths_test,DeterministicResults=True)
     _origPredictions = _srcModel[0][1]
-        #@classmethod
-        #def setUpClass(self):
         
-        #truth0.extend( ret[ 0 ][ 0 ] )
-        #pred0.extend( ret[ 0 ][ 1 ] )
-        #truth1.extend( ret[ 1 ][ 0 ] )
-        #pred1.extend( ret[ 1 ][ 1 ] )
-        #truth2.extend( ret[ 2 ][ 0 ] )
-        #pred2.extend( ret[ 2 ][ 1 ] )
-
     def setUp(self):
         print('\nStarting next test...\n')
 
@@ -42,7 +33,6 @@ class p3b1tests(unittest.TestCase):
 
         k = np.random.randint(1,100)
         b = np.random.randint(100)
-        print(len(X_train))
         for x in range(len(X_train)):
             for i in range(randomSubset.shape[0]):
                 c = randomSubset[i]
@@ -80,9 +70,6 @@ class p3b1tests(unittest.TestCase):
         X = [X_train[0], X_train[1], X_train[2], X_test[0], X_test[1], X_test[2]]
         
         X = self.__shuffleColumnsInUnison(X)
-        
-        for x in range(len(X_train)):
-            print(X_train[x].shape)
 
         X_train[0] = X[0]
         X_train[1] = X[1]
@@ -230,10 +217,11 @@ class p3b1tests(unittest.TestCase):
 
         newPreds = (p3b1_baseline_keras2.do_10_fold(X_train,y_train,X_test,y_test,True))[0][1]
 
+        count = 0
         for x in range(len(self._origPredictions)):
             if self._origPredictions[x] != cl:
-                assert self._origPredictions[x] == newPreds[x], "removing a class causes the model to change predictions for the remaining classes"
-
+                assert self._origPredictions[x] == newPreds[count], "removing a class causes the model to change predictions for the remaining classes"
+                count = count + 1
 
     def test_MR52_RemovalOfSamples(self):
         print('MR 5.2')
