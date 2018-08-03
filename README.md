@@ -1,4 +1,4 @@
-# NSF-SHF-ScientificSWTesting
+ScientificSWTesting
 
 The code for model creation was taken from https://github.com/ECP-CANDLE/Benchmarks
 
